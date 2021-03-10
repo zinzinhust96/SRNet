@@ -1,4 +1,4 @@
-# Predict script 
+# Predict script
 # author: Niwhskal
 
 import os
@@ -17,8 +17,8 @@ import torchvision.transforms.functional as F
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def main():
-    
-    parser = argparse.ArgumentParser() 
+
+    parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', help = 'Directory containing xxx_i_s and xxx_i_t with same prefix',
                         default = cfg.example_data_dir)
     parser.add_argument('--save_dir', help = 'Directory to save result', default = cfg.predict_result_dir)
@@ -33,9 +33,9 @@ def main():
 
     G = Generator(in_channels = 3).to(device)
     D1 = Discriminator(in_channels = 6).to(device)
-    D2 = Discriminator(in_channels = 6).to(device)  
-    vgg_features = Vgg19().to(device)   
-      
+    D2 = Discriminator(in_channels = 6).to(device)
+    vgg_features = Vgg19().to(device)
+
     G_solver = torch.optim.Adam(G.parameters(), lr=cfg.learning_rate, betas = (cfg.beta1, cfg.beta2))
     D1_solver = torch.optim.Adam(D1.parameters(), lr=cfg.learning_rate, betas = (cfg.beta1, cfg.beta2))
     D2_solver = torch.optim.Adam(D2.parameters(), lr=cfg.learning_rate, betas = (cfg.beta1, cfg.beta2))
@@ -49,6 +49,7 @@ def main():
     D2_solver.load_state_dict(checkpoint['d2_optimizer'])
 
     trfms = To_tensor()
+    print('args.input_dir: ', args.input_dir)
     example_data = example_dataset(data_dir= args.input_dir, transform = trfms)
     example_loader = DataLoader(dataset = example_data, batch_size = 1, shuffle = False)
     example_iter = iter(example_loader)
@@ -92,7 +93,7 @@ def main():
         o_t = F.to_pil_image((o_t + 1)/2)
         o_b = F.to_pil_image((o_b + 1)/2)
         o_f = F.to_pil_image((o_f + 1)/2)
-                        
+
         o_f.save(os.path.join(args.save_dir, name + 'o_f.png'))
 
         #Uncomment the following if you need to save the rest of the predictions
@@ -101,7 +102,7 @@ def main():
         #o_t.save(os.path.join(savedir, name + 'o_t.png'))
         #o_b.save(os.path.join(savedir, name + 'o_b.png'))
 
-            
+
 if __name__ == '__main__':
     main()
     print_log('predicting finished.', content_color = PrintColor['yellow'])

@@ -1,5 +1,5 @@
 # dir
-data_dir = '/home/niwhskal/datasets/srnet_data'
+data_dir = '/hdd/namdng/ebar/SRNet/datasets/srnet_data/'
 i_t_dir = 'i_t'
 i_s_dir = 'i_s'
 t_sk_dir = 't_sk'

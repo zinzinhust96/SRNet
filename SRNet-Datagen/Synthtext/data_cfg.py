@@ -11,8 +11,8 @@ font_size = [25, 60]
 underline_rate = 0.01
 strong_rate = 0.07
 oblique_rate = 0.02
-font_dir = '/home/niwhskal/datasets/fonts/english_ttf'
-standard_font_path = '/home/niwhskal/datasets/fonts/english_ttf/arial.ttf'
+font_dir = '/hdd/namdng/ebar/SRNet/datasets/fonts/english_ttf/'
+standard_font_path = '/hdd/namdng/ebar/SRNet/datasets/fonts/english_ttf/arial.ttf'
 
 # text
 text_filepath = 'data/texts.txt'
@@ -20,8 +20,8 @@ capitalize_rate = 0.1
 uppercase_rate = 0.04
 
 # background
-bg_filepath = '/home/niwhskal/datasets/imnames.cp'
-temp_bg_path = '/home/niwhskal/Downloads/bg_img/'
+bg_filepath = '/hdd/namdng/ebar/SRNet/datasets/imnames.cp'
+temp_bg_path = '/hdd/namdng/ebar/SRNet/datasets/bg_data/bg_img/'
 
 ## background augment
 brightness_rate = 0.8
