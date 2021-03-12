@@ -17,6 +17,7 @@ from torchvision import models, transforms, datasets
 from loss import build_generator_loss, build_discriminator_loss
 from datagen import datagen_srnet, example_dataset, To_tensor
 from torch.utils.data import Dataset, DataLoader
+from torch.utils.tensorboard import SummaryWriter
 
 
 def requires_grad(model, flag=True):
@@ -98,10 +99,16 @@ def clip_grad(model):
         h.data.clamp_(-0.01, 0.01)
 
 def main():
+    train_name = get_train_name()
+
+    # Initialize log folder
+    if not os.path.exists(os.path.join(cfg.checkpoint_savedir, train_name)):
+        os.makedirs(os.path.join(cfg.checkpoint_savedir, train_name))
+
+    # Init Tensorboard
+    writer = SummaryWriter(os.path.join(cfg.checkpoint_savedir, train_name))
 
     os.environ['CUDA_VISIBLE_DEVICES'] = str(cfg.gpu)
-
-    train_name = get_train_name()
 
     print_log('Initializing SRNET', content_color = PrintColor['yellow'])
 
@@ -192,7 +199,7 @@ def main():
                     #'d1_scheduler':d1_scheduler.state_dict(),
                     #'d2_scheduler':d2_scheduler.state_dict(),
                 },
-                cfg.checkpoint_savedir+f'train_step-{step+1}.model',
+                os.path.join(cfg.checkpoint_savedir, train_name, 'train_step-{}.model'.format(step+1))
             )
 
         try:
@@ -312,6 +319,9 @@ def main():
 
         if ((step+1) % cfg.write_log_interval == 0):
 
+            writer.add_scalar('Loss/Gen', g_loss.item(), step+1)
+            writer.add_scalar('Loss/D_bg', db_loss.item(), step+1)
+            writer.add_scalar('Loss/D_fus', df_loss.item(), step+1)
             print('Iter: {}/{} | Gen: {} | D_bg: {} | D_fus: {}'.format(step+1, cfg.max_iter, g_loss.item(), db_loss.item(), df_loss.item()))
 
         if ((step+1) % cfg.gen_example_interval == 0):
@@ -349,7 +359,6 @@ def main():
                 o_f = F.to_pil_image((o_f + 1)/2)
 
                 o_f.save(os.path.join(savedir, name + 'o_f.png'))
-
                 o_sk.save(os.path.join(savedir, name + 'o_sk.png'))
                 o_t.save(os.path.join(savedir, name + 'o_t.png'))
                 o_b.save(os.path.join(savedir, name + 'o_b.png'))
