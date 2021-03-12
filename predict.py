@@ -16,6 +16,24 @@ import torchvision.transforms.functional as F
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+from PIL import Image
+
+def vstack(images):
+    if len(images) == 0:
+        raise ValueError("Need 0 or more images")
+
+    if isinstance(images[0], np.ndarray):
+        images = [Image.fromarray(img) for img in images]
+    width = max([img.size[0] for img in images])
+    height = sum([img.size[1] for img in images])
+    stacked = Image.new(images[0].mode, (width, height))
+
+    y_pos = 0
+    for img in images:
+        stacked.paste(img, (0, y_pos))
+        y_pos += img.size[1]
+    return stacked
+
 def main():
 
     parser = argparse.ArgumentParser()
@@ -85,16 +103,21 @@ def main():
         o_t = o_t.squeeze(0).detach().to('cpu')
         o_b = o_b.squeeze(0).detach().to('cpu')
         o_f = o_f.squeeze(0).detach().to('cpu')
+        i_t = i_t.squeeze(0).detach().to('cpu')
+        i_s = i_s.squeeze(0).detach().to('cpu')
 
         if not os.path.exists(args.save_dir):
             os.makedirs(args.save_dir)
 
+        i_t = F.to_pil_image((i_t + 1)/2)
+        i_s = F.to_pil_image((i_s + 1)/2)
         o_sk = F.to_pil_image(o_sk)
         o_t = F.to_pil_image((o_t + 1)/2)
         o_b = F.to_pil_image((o_b + 1)/2)
         o_f = F.to_pil_image((o_f + 1)/2)
 
-        o_f.save(os.path.join(args.save_dir, name + 'o_f.png'))
+        stacked = vstack([i_s, i_t, o_sk, o_t, o_b, o_f])
+        stacked.save(os.path.join(args.save_dir, name + '_stacked.png'))
 
         #Uncomment the following if you need to save the rest of the predictions
 

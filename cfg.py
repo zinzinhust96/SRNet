@@ -11,7 +11,7 @@ lf_theta_3 = 500.
 epsilon = 1e-8
 
 # train
-learning_rate = 1e-4
+learning_rate = 1e-5
 decay_rate = 0.9
 beta1 = 0.9
 beta2 = 0.999
@@ -24,9 +24,9 @@ checkpoint_savedir = 'logs/'
 ckpt_path = '/hdd/namdng/ebar/SRNet/pretrained/trained_final_5M_.model'
 
 # data
-batch_size = 8
+batch_size = 4
 data_shape = [64, None]
-data_dir = '/hdd/gioipv/SRNet-Datagen/output_data/srnet_data_v1/'
+data_dir = '/hdd/gioipv/SRNet-Datagen/output_data/srnet_data_10Mar_augment'
 i_t_dir = 'i_t'
 i_s_dir = 'i_s'
 t_sk_dir = 't_sk'
@@ -34,7 +34,7 @@ t_t_dir = 't_t'
 t_b_dir = 't_b'
 t_f_dir = 't_f'
 mask_t_dir = 'mask_t'
-example_data_dir = 'custom_feed/labels'
+example_data_dir = 'custom_feed/labels_ebar'
 example_result_dir = 'custom_feed/gen_logs'
 
 # predict
